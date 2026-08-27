@@ -20,6 +20,7 @@ input[type=text],input[type=date],input[type=number]{width:100%;padding:12px;bor
 button{background:var(--accent);color:#fff;padding:10px 16px;border:none;border-radius:10px;cursor:pointer;box-shadow:0 6px 18px rgba(15,98,254,0.14);font-weight:700}
 button:disabled{opacity:0.6;cursor:not-allowed}
 .muted{color:var(--muted);font-size:13px}
+.muted.small{font-size:12px;margin:-4px 0 12px;line-height:1.4}
 .dashboard .total{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px;padding:6px 0 18px 0}
 #total-count{display:block;font-size:72px;font-weight:800;color:var(--accent);line-height:1}
 
