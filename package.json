@@ -1,0 +1,13 @@
+{
+  "name": "sainamjapa-webapp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "netlify dev",
+    "start": "netlify dev",
+    "build": "echo \"No build step for static site\""
+  },
+  "devDependencies": {
+    "netlify-cli": "^15.0.0"
+  }
+}

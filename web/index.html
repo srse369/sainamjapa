@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sai Nama Japam</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <h1>Sathya Sai Nama Japam</h1>
+      </header>
+
+      <section class="card dashboard" id="dashboard">
+        <div class="total">
+          <span id="total-count">—</span>
+        </div>
+      </section>
+
+      <section class="card map-card">
+        <div class="map-header">
+          <h3>World Map</h3>
+          <span id="map-status" class="map-status">Locations</span>
+        </div>
+        <div id="world-map" aria-label="Map of participation locations"></div>
+      </section>
+
+    <section class="card breakdown" id="breakdown-dashboard">
+        <h3>Daily Breakdown</h3>
+        <div id="daily-histogram" class="histogram" aria-live="polite">
+          <!-- bars inserted here -->
+        </div>
+      </section>
+
+      <button id="open-submit" class="submit-fab" aria-haspopup="dialog" aria-controls="submit-modal">Submit your Japam count</button>
+
+      <div id="submit-modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-content">
+          <button class="modal-close" id="modal-close" aria-label="Close">×</button>
+          <h2>Submit Today</h2>
+          <form id="submit-form">
+            <label>Name (optional)
+              <input type="text" id="name" name="name" placeholder="Your name (optional)">
+            </label>
+
+            <label>Date (required)
+              <input type="date" id="date" name="date" required>
+            </label>
+
+            <label>Japam Count (required)
+              <input type="number" id="count" name="count" min="0" required>
+            </label>
+
+            <div class="actions">
+              <button type="submit" id="submit-btn">Submit your Japam count</button>
+            </div>
+          </form>
+          <p id="form-msg" class="muted"></p>
+        </div>
+      </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="app.js"></script>
+  </body>
+</html>
