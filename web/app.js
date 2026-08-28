@@ -1,9 +1,38 @@
 const endpoints = {
   submit: '/.netlify/functions/submit',
-  aggregate: '/.netlify/functions/aggregate'
+  aggregate: '/.netlify/functions/aggregate',
+  registerName: '/.netlify/functions/register_name',
+  fetchNames: '/.netlify/functions/fetch_names'
 };
 
 function qs(id) { return document.getElementById(id); }
+
+let allNames = [];
+
+// Fetch names on page load
+async function loadNames() {
+  try {
+    const res = await fetch(endpoints.fetchNames);
+    const data = await res.json();
+    if (data.ok) {
+      allNames = data.names || [];
+      renderNameDropdown();
+    }
+  } catch (err) {
+    console.error('Failed to load names:', err);
+  }
+}
+
+function renderNameDropdown() {
+  const select = qs('name');
+  select.innerHTML = '<option value="">— Anonymous —</option>';
+  allNames.forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    select.appendChild(opt);
+  });
+}
 
 function renderMap(locations) {
   const mapEl = qs('world-map');
@@ -126,10 +155,88 @@ function setDefaultDate(){
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Only show aggregate dashboard by default
+  // Load names and initial aggregates
+  loadNames();
   fetchAggregates().catch(err => console.error(err));
 
-  // Modal controls
+  // ===== REGISTER MODAL CONTROLS =====
+  const registerModal = qs('register-modal');
+  const openRegisterBtn = qs('open-register');
+  const registerCloseBtn = qs('register-modal-close');
+  const registerForm = qs('register-form');
+  const registerMsg = qs('register-msg');
+
+  function openRegisterModal() {
+    registerModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    qs('register-name').focus();
+  }
+
+  function closeRegisterModal() {
+    registerModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+    registerForm.reset();
+    registerMsg.textContent = '';
+    registerMsg.style.color = '';
+  }
+
+  openRegisterBtn.addEventListener('click', openRegisterModal);
+  registerCloseBtn.addEventListener('click', closeRegisterModal);
+  registerModal.addEventListener('click', (e) => {
+    if (e.target === registerModal) closeRegisterModal();
+  });
+
+  registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    registerMsg.textContent = '';
+    const name = qs('register-name').value.trim();
+
+    if (!name) {
+      registerMsg.textContent = 'Name is required';
+      registerMsg.style.color = '#ef4444';
+      return;
+    }
+
+    qs('register-btn').disabled = true;
+    try {
+      const res = await fetch(endpoints.registerName, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        registerMsg.textContent = 'Name registered!';
+        registerMsg.style.color = '#10b981';
+        await loadNames();
+        setTimeout(() => {
+          closeRegisterModal();
+        }, 800);
+      } else if (res.status === 409) {
+        registerMsg.textContent = 'Name already registered';
+        registerMsg.style.color = '#ef4444';
+      } else {
+        registerMsg.textContent = data.error || 'Registration failed';
+        registerMsg.style.color = '#ef4444';
+      }
+    } catch (err) {
+      console.error(err);
+      registerMsg.textContent = 'Error: ' + err.message;
+      registerMsg.style.color = '#ef4444';
+    } finally {
+      qs('register-btn').disabled = false;
+    }
+  });
+
+  // Close register modal with ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && registerModal.getAttribute('aria-hidden') === 'false') {
+      closeRegisterModal();
+    }
+  });
+
+  // ===== SUBMIT MODAL CONTROLS =====
   const openBtn = qs('open-submit');
   const modal = qs('submit-modal');
   const closeBtn = qs('modal-close');
@@ -140,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.setAttribute('aria-hidden','false');
     document.body.classList.add('modal-open');
     setDefaultDate();
-    qs('name').focus();
   }
   function closeModal(){
     modal.setAttribute('aria-hidden','true');
@@ -151,7 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
   openBtn.addEventListener('click', openModal);
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
-  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+  document.addEventListener('keydown', (e)=>{ 
+    if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false') closeModal(); 
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();

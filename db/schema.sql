@@ -11,3 +11,9 @@ create table if not exists chants (
   count integer not null check (count >= 0),
   created_at timestamptz default now()
 );
+
+create table if not exists names (
+  id uuid default gen_random_uuid() primary key,
+  name text not null unique,
+  created_at timestamptz default now()
+);

@@ -1,0 +1,30 @@
+⬥ Injecting environment variable values for all scopes
+Failed to fetch AI Gateway token for account 6a9053be753d551861a5f75a: Forbidden
+⬥ Ignored general context env var: LANG (defined in process)
+⬥ Injected .env file env vars: SUPABASE_URL, SUPABASE_KEY
+⬥ No app server detected. Using simple static server
+⬥ Running static server from "sainamjapa/web"
+⬥ Setting up local dev server
+
+⬥ Static server listening to 3999
+⬥ Loaded function submit
+⬥ Loaded function aggregate
+⬥ Loaded function register_name
+⬥ Loaded function fetch_names
+
+   ╭─────────────────────── ⬥  ────────────────────────╮
+   │                                                   │
+   │   Local dev server ready: http://localhost:8888   │
+   │                                                   │
+   ╰───────────────────────────────────────────────────╯
+
+(node:27928) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Request from ::1: GET /.netlify/functions/fetch_names
+Request from ::1: GET /.netlify/functions/aggregate
+Response with status 404 in 406 ms.
+Response with status 200 in 456 ms.
+⬥ Reloading function fetch_names...
+⬥ Reloaded function fetch_names
+Request from ::1: POST /.netlify/functions/register_name
+Response with status 404 in 69 ms.

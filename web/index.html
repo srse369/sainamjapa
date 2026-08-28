@@ -37,17 +37,37 @@
         </div>
       </section>
 
+      <button id="open-register" class="register-fab" aria-haspopup="dialog" aria-controls="register-modal">Register Name</button>
       <button id="open-submit" class="submit-fab" aria-haspopup="dialog" aria-controls="submit-modal">Submit your Japam count</button>
+
+      <div id="register-modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-content">
+          <button class="modal-close" id="register-modal-close" aria-label="Close">×</button>
+          <h2>Register Your Name</h2>
+          <form id="register-form">
+            <label>Full Name (required)
+              <input type="text" id="register-name" name="name" placeholder="Your name" required>
+            </label>
+            <p class="muted small">Register once to appear in the submission dropdown.</p>
+            <div class="actions">
+              <button type="submit" id="register-btn">Register</button>
+            </div>
+          </form>
+          <p id="register-msg" class="muted"></p>
+        </div>
+      </div>
 
       <div id="submit-modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
         <div class="modal-content">
           <button class="modal-close" id="modal-close" aria-label="Close">×</button>
           <h2>Submit Today</h2>
           <form id="submit-form">
-            <label>Name (optional)
-              <input type="text" id="name" name="name" placeholder="Your name (optional)">
+            <label>Name (select or leave anonymous)
+              <select id="name" name="name">
+                <option value="">— Anonymous —</option>
+              </select>
             </label>
-            <p class="muted small">This name will not be shown anywhere on the website.</p>
+            <p class="muted small">Your submission will be recorded but your name will not be displayed publicly.</p>
 
             <label>Date (required)
               <input type="date" id="date" name="date" required>
