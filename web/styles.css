@@ -1,6 +1,5 @@
 :root{
   --bg: #f6f8fb;
-  --bg-image: url('/assets/bg.jpg');
   --card: #ffffff;
   --muted: #6b7280;
   --accent: #0f62fe;
@@ -10,12 +9,8 @@
 }
 *{box-sizing:border-box}
 body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-  /* Gradient overlay above the background image for legibility */
-  background-image: linear-gradient(180deg, rgba(246,248,251,0.88) 0%, rgba(240,246,255,0.88) 100%), var(--bg-image);
-  background-size: cover, cover;
-  background-position: center center, center center;
-  background-repeat: no-repeat, no-repeat;
-  background-attachment: fixed;
+  /* Page background: soft gradient only (background image removed) */
+  background: linear-gradient(180deg,#f6f8fb 0%, #f0f6ff 100%);
   color:#0b1220;margin:0;padding:28px}
 .container{max-width:940px;margin:0 auto}
 .header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
@@ -36,8 +31,7 @@ button:disabled{opacity:0.6;cursor:not-allowed}
 
 .register-fab{position:fixed;right:28px;top:72px;background:#10b981;color:#fff;border:none;padding:12px 18px;border-radius:10px;box-shadow:0 8px 26px rgba(16,185,129,0.16);cursor:pointer;font-weight:700;z-index:1000}
 
-/* Top-left small logo */
-#corner-logo{position:fixed;left:18px;top:18px;width:128px;height:96px;object-fit:cover;border-radius:8px;box-shadow:0 6px 18px rgba(11,18,32,0.12);z-index:1001}
+/* Logo removed: top-left image no longer used */
 
 .modal{display:none;position:fixed;inset:0;background:linear-gradient(180deg, rgba(3,7,18,0.28), rgba(3,7,18,0.42));align-items:center;justify-content:center;padding:24px;z-index:5000}
 .modal[aria-hidden="false"]{display:flex}
