@@ -66,6 +66,8 @@
     font-weight: bold;
     text-align: center;
     color: rgb(220, 90, 14);
+    margin-block-start: 1em;
+    margin-block-end: 2em;
 
     /* main glow effect */
     text-shadow:
