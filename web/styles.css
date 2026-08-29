@@ -28,6 +28,7 @@
 
   input,
   textarea,
+  button,
   select {
     font-size: 16px;
   }
@@ -53,6 +54,11 @@
     font-size: 26px;
     font-weight: 700;
     color: #073763
+  }
+
+  h5 {
+    margin-block-start: 0em;
+    margin-block-end: 0em;
   }
 
   .glow {
@@ -181,9 +187,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 12px;
-    padding: 6px 0 18px 0
+    padding: 6px 0 6px 0
   }
 
   #total-count {
