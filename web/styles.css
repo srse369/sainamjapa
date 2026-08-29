@@ -66,17 +66,13 @@
     font-weight: bold;
     text-align: center;
     color: rgb(220, 90, 14);
-    margin-block-start: 1em;
     margin-block-end: 2em;
 
     /* main glow effect */
     text-shadow:
       0 0 5px #fff,
       0 0 10px #fff,
-      0 0 20px #919940,
-      0 0 40px #919940,
-      0 0 80px #919940,
-      0 0 120px #919940;
+      0 0 20px #434099;
   }
 
   /* -----------------------------
