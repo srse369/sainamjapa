@@ -9,7 +9,7 @@
     --accent-2: #ff9f6f;
     --border: #e6eef8;
     --glass: rgba(255, 255, 255, 0.6);
-  } 
+  }
 
   /* -----------------------------
     Base / Resets
@@ -47,6 +47,22 @@
     font-size: 26px;
     font-weight: 700;
     color: #073763
+  }
+
+  .glow {
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    color: rgb(220, 90, 14);
+
+    /* main glow effect */
+    text-shadow:
+      0 0 5px #fff,
+      0 0 10px #fff,
+      0 0 20px #919940,
+      0 0 40px #919940,
+      0 0 80px #919940,
+      0 0 120px #85c162;
   }
 
   /* -----------------------------
@@ -113,8 +129,6 @@
   }
 
   .register-fab {
-    position: fixed;
-    right: 28px;
     top: 78px;
     background: #1075b9;
     color: #fff;
@@ -124,12 +138,10 @@
     box-shadow: 0 8px 26px rgba(16, 185, 129, 0.16);
     cursor: pointer;
     font-weight: 700;
-    z-index: 1000
+    z-index: 1000;
   }
 
   .submit-fab {
-    position: fixed;
-    right: 28px;
     top: 128px;
     background: var(--accent);
     color: #fff;
@@ -139,7 +151,7 @@
     box-shadow: 0 8px 26px rgba(15, 98, 254, 0.16);
     cursor: pointer;
     font-weight: 700;
-    z-index: 1000
+    z-index: 1000;
   }
 
   /* -----------------------------
@@ -241,7 +253,7 @@
 
   @media (min-width:920px) {
     .container {
-      max-width: 920px
+      max-width: 920px;
     }
   }
 
