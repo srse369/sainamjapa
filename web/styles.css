@@ -26,6 +26,12 @@
     padding: 28px;
   }
 
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
   .container {
     max-width: 940px;
     margin: 0 auto
@@ -62,7 +68,7 @@
       0 0 20px #919940,
       0 0 40px #919940,
       0 0 80px #919940,
-      0 0 120px #85c162;
+      0 0 120px #919940;
   }
 
   /* -----------------------------
