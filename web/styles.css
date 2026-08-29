@@ -5,11 +5,11 @@
     --bg: #f6f8fb;
     --card: rgb(245, 245, 245);
     --muted: #6b7280;
-    --accent: #0f62fe;
-    --accent-2: #6fb1ff;
+    --accent: #ff6200;
+    --accent-2: #ff9f6f;
     --border: #e6eef8;
     --glass: rgba(255, 255, 255, 0.6);
-  }
+  } 
 
   /* -----------------------------
     Base / Resets
@@ -112,31 +112,31 @@
     cursor: not-allowed
   }
 
-  .submit-fab {
+  .register-fab {
     position: fixed;
     right: 28px;
     top: 78px;
+    background: #1075b9;
+    color: #fff;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    box-shadow: 0 8px 26px rgba(16, 185, 129, 0.16);
+    cursor: pointer;
+    font-weight: 700;
+    z-index: 1000
+  }
+
+  .submit-fab {
+    position: fixed;
+    right: 28px;
+    top: 128px;
     background: var(--accent);
     color: #fff;
     border: none;
     padding: 12px 18px;
     border-radius: 10px;
     box-shadow: 0 8px 26px rgba(15, 98, 254, 0.16);
-    cursor: pointer;
-    font-weight: 700;
-    z-index: 1000
-  }
-
-  .register-fab {
-    position: fixed;
-    right: 28px;
-    top: 128px;
-    background: #10b981;
-    color: #fff;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 10px;
-    box-shadow: 0 8px 26px rgba(16, 185, 129, 0.16);
     cursor: pointer;
     font-weight: 700;
     z-index: 1000
