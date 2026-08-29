@@ -14,11 +14,18 @@
 
 <body>
     <main class="container">
-        <header class="header">
-            <h1>Sathya Sai Nama Japam</h1>
-        </header>
+        <section class="" style="background-color:transparent;">
+            <h3 style="text-align: center;">Sathya Sai Nama Japam</h1>
+        </section>
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
 
         <section class="card dashboard" id="dashboard">
+            <h3 style="text-align: center;">Total Count</h3>
             <div class="total">
                 <span id="total-count">—</span>
             </div>
@@ -29,18 +36,14 @@
         </section>
 
         <section class="card breakdown" id="breakdown-dashboard">
-            <h3>Daily Breakdown</h3>
-            <div class="histogram-banner" aria-hidden="true"></div>
+            <h3 style="text-align: center;">Daily Breakdown</h3>
             <div id="daily-histogram" class="histogram" aria-live="polite">
                 <!-- bars inserted here -->
             </div>
         </section>
 
-        <section class="card map-card">
-            <div class="map-header">
-                <h3>World Map</h3>
-                <span id="map-status" class="map-status">Locations</span>
-            </div>
+        <section class="card map-card" id="map-section" style="display: none;">
+            <h3 style="text-align: center;">Locations</h3>
             <div id="world-map" aria-label="Map of participation locations"></div>
         </section>
 
@@ -98,6 +101,14 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('showmap') === 'true') {
+            document.getElementById('map-section').style.display = 'block';
+        }
+    </script>
+    
     <script src="app.js"></script>
 </body>
 
