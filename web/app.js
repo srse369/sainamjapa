@@ -147,9 +147,16 @@ function renderAggregates({total, daily}){
   }
 }
 
+function getLocalDateString(date = new Date()){
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 function setDefaultDate(){
   const dateInput = qs('date');
-  const today = new Date().toISOString().slice(0,10);
+  const today = getLocalDateString();
   dateInput.value = today;
   dateInput.max = today;
 }
@@ -270,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!date || count === '') { msg.textContent = 'Please provide date and count.'; return; }
 
     // Prevent future dates client-side
-    const todayStr = new Date().toISOString().slice(0,10);
+    const todayStr = getLocalDateString();
     if (date > todayStr) { msg.textContent = 'Date cannot be in the future.'; return; }
 
     qs('submit-btn').disabled = true;
