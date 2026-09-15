@@ -6,11 +6,6 @@ const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || 'noreply@sainamjapa.local';
 const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Sainam Japam';
 
-// Twilio SMS configuration
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
-const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
-
 async function sendOTPEmail(email, code) {
   if (!BREVO_API_KEY) {
     console.log('\n📧 ===== EMAIL (Development Mode - Not Sent) =====');
@@ -93,57 +88,12 @@ If you didn't request this code, you can safely ignore this email.
   }
 }
 
-async function sendOTPSMS(phone, code) {
-  if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_PHONE_NUMBER) {
-    console.log('\n📱 ===== SMS (Development Mode - Not Sent) =====');
-    console.log('To:', phone);
-    console.log('Code:', code);
-    console.log('====================================================\n');
-    return true;
-  }
-
-  try {
-    const body = new URLSearchParams({
-      To: phone,
-      From: TWILIO_PHONE_NUMBER,
-      Body: `Your Sainam Japam verification code is: ${code}. Valid for 10 minutes. Do not share.`,
-    });
-
-    const auth = Buffer.from(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`).toString('base64');
-    const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${auth}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: body.toString(),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ Twilio API Error:', response.status, errorText);
-      return false;
-    }
-
-    const result = await response.json();
-    console.log('✅ SMS sent successfully:', result.sid);
-    return true;
-  } catch (error) {
-    console.error('❌ Error sending SMS:', error);
-    return false;
-  }
-}
-
 function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 function isEmail(contact) {
   return contact.includes('@');
-}
-
-function isPhone(contact) {
-  return /^[\d\s\+\-\(\)]{10,}$/.test(contact.replace(/\s/g, ''));
 }
 
 const jsonResponse = (status, body) => ({
@@ -185,8 +135,8 @@ exports.handler = async (event) => {
     return jsonResponse(400, {error: 'Invalid type'});
   }
 
-  if (!isEmail(contact) && !isPhone(contact)) {
-    return jsonResponse(400, {error: 'Invalid email or phone number'});
+  if (!isEmail(contact)) {
+    return jsonResponse(400, {error: 'Invalid email address'});
   }
 
   try {
@@ -224,9 +174,7 @@ exports.handler = async (event) => {
       return jsonResponse(500, {error: 'Failed to store OTP'});
     }
 
-    const sent = isEmail(contact)
-      ? await sendOTPEmail(contact, code)
-      : await sendOTPSMS(contact, code);
+    const sent = await sendOTPEmail(contact, code);
 
     if (!sent) {
       return jsonResponse(500, {error: 'Failed to send OTP'});

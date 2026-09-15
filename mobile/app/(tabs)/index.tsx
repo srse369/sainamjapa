@@ -44,7 +44,7 @@ export default function DashboardScreen() {
 
   const handleSignupContact = async () => {
     if (!signupContact.trim()) {
-      setSignupError(isEmail(signupContact) ? 'Email is required' : 'Phone number is required');
+      setSignupError('Email is required');
       return;
     }
     if (!signupName.trim()) {
@@ -104,7 +104,7 @@ export default function DashboardScreen() {
 
   const handleSigninContact = async () => {
     if (!signinContact.trim()) {
-      setSigninError(isEmail(signinContact) ? 'Email is required' : 'Phone number is required');
+      setSigninError('Email is required');
       return;
     }
     setSigninError('');
@@ -228,7 +228,7 @@ export default function DashboardScreen() {
                 <View style={styles.userInfoText}>
                   <Text style={styles.userName}>{user.name}</Text>
                   <Text style={styles.userContact}>
-                    {user.email || user.phone || ''}
+                    {user.email}
                   </Text>
                 </View>
               </View>
@@ -319,8 +319,8 @@ export default function DashboardScreen() {
               label={t('auth.signup.contactLabel')}
               value={signupContact}
               onChangeText={setSignupContact}
-              placeholder={isEmail(signupContact) ? 'you@example.com' : '+1 555 123 4567'}
-              keyboardType={isEmail(signupContact) ? 'email-address' : 'phone-pad'}
+              placeholder="you@example.com"
+              keyboardType="email-address"
               autoCapitalize="none"
               error={signupError}
             />
@@ -336,7 +336,7 @@ export default function DashboardScreen() {
         ) : (
           <>
             <Text style={styles.modalHint}>
-              {t('auth.otp.subtitle')} {isEmail(signupContact) ? signupContact : signupContact}
+              {t('auth.otp.subtitle')} {signupContact}
             </Text>
             <View style={styles.otpContainer}>
               {[...Array(6)].map((_, i) => (
@@ -384,8 +384,8 @@ export default function DashboardScreen() {
               label={t('auth.signin.contactLabel')}
               value={signinContact}
               onChangeText={setSigninContact}
-              placeholder={isEmail(signinContact) ? 'you@example.com' : '+1 555 123 4567'}
-              keyboardType={isEmail(signinContact) ? 'email-address' : 'phone-pad'}
+              placeholder="you@example.com"
+              keyboardType="email-address"
               autoCapitalize="none"
               error={signinError}
             />
@@ -393,7 +393,7 @@ export default function DashboardScreen() {
         ) : (
           <>
             <Text style={styles.modalHint}>
-              {t('auth.otp.subtitle')} {isEmail(signinContact) ? signinContact : signinContact}
+              {t('auth.otp.subtitle')} {signinContact}
             </Text>
             <View style={styles.otpContainer}>
               {[...Array(6)].map((_, i) => (

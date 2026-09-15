@@ -26,11 +26,9 @@ export function AuthScreen({ type, title, submitLabel }: AuthScreenProps) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const isEmail = contact.includes('@');
-
   const handleSendOTP = async () => {
     if (!contact.trim()) {
-      setError(isEmail ? 'Email is required' : 'Phone number is required');
+      setError('Email is required');
       return;
     }
     if (type === 'signup' && !name.trim()) {
@@ -83,8 +81,8 @@ export function AuthScreen({ type, title, submitLabel }: AuthScreenProps) {
         label={t(`auth.${type}.contactLabel`)}
         value={contact}
         onChangeText={setContact}
-        placeholder={isEmail ? 'you@example.com' : '+1 555 123 4567'}
-        keyboardType={isEmail ? 'email-address' : 'phone-pad'}
+        placeholder="you@example.com"
+        keyboardType="email-address"
         autoCapitalize="none"
         error={error}
       />
@@ -108,7 +106,7 @@ export function AuthScreen({ type, title, submitLabel }: AuthScreenProps) {
     <>
       <Text style={styles.stepTitle}>{t('auth.otp.title')}</Text>
       <Text style={styles.stepSubtitle}>
-        {t('auth.otp.subtitle')} {isEmail ? contact : contact}
+        {t('auth.otp.subtitle')} {contact}
       </Text>
       <View style={styles.otpContainer}>
         {[...Array(6)].map((_, i) => (
