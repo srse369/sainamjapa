@@ -1,62 +1,30 @@
-// Locale detection from subdomain + browser language auto-redirect
-// es.saimantrajapam.org → 'es'
-// hi.saimantrajapam.org → 'hi'
+// Locale detection from URL path
+// /en/ → 'en'
+// /es/ → 'es'
+// /hi/ → 'hi'
 // (any other) → 'en'
 
-// Auto-redirect from root domain based on browser language
-(function() {
-  const hostname = window.location.hostname;
-  const isRootDomain = hostname === 'saimantrajapam.org' || hostname === 'www.saimantrajapam.org';
-  
-  // Skip if already on a locale subdomain
-  const parts = hostname.split('.');
-  const hasLocaleSubdomain = parts.length >= 3 && ['es', 'hi', 'en'].includes(parts[0]);
-  
-  // Skip if user has explicitly set language preference
-  const hasExplicitLang = document.cookie.includes('lang=') || new URLSearchParams(window.location.search).has('lang');
-  
-  // Skip if already redirected once in this session
-  const alreadyRedirected = sessionStorage.getItem('localeRedirected') === '1';
-  
-  if (isRootDomain && !hasLocaleSubdomain && !hasExplicitLang && !alreadyRedirected) {
-    const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-    const primary = browserLang.split('-')[0];
-    
-    const localeMap = { en: 'en', es: 'es', hi: 'hi' };
-    const sub = localeMap[primary] || 'en';
-    
-    const target = 'https://' + sub + '.saimantrajapam.org' + window.location.pathname + window.location.search;
-    
-    if (window.location.href !== target) {
-      sessionStorage.setItem('localeRedirected', '1');
-      window.location.replace(target);
-    }
-  }
-})();
-
 function detectLocale() {
-  const hostname = window.location.hostname;
-  const parts = hostname.split('.');
-  // Production: es.saimantrajapam.org (3+ parts)
-  // Local: es.localhost (2 parts)
-  if (parts.length >= 3) {
-    const subdomain = parts[0];
-    if (['es', 'hi', 'en'].includes(subdomain)) {
-      return subdomain;
-    }
-  } else if (parts.length === 2) {
-    // Local development: es.localhost, hi.localhost, en.localhost
-    const subdomain = parts[0];
-    if (['es', 'hi', 'en'].includes(subdomain)) {
-      return subdomain;
-    }
+  const path = window.location.pathname;
+  const parts = path.split('/').filter(Boolean);
+  
+  if (parts.length > 0 && ['es', 'hi', 'en'].includes(parts[0])) {
+    return parts[0];
   }
+  
   // Check for query param override
   const params = new URLSearchParams(window.location.search);
   if (params.has('lang')) {
     const lang = params.get('lang');
     if (['es', 'hi', 'en'].includes(lang)) return lang;
   }
+  
+  // Check cookie
+  const cookieLang = document.cookie.match(/lang=([^;]+)/);
+  if (cookieLang && ['es', 'hi', 'en'].includes(cookieLang[1])) {
+    return cookieLang[1];
+  }
+  
   // Default to English
   return 'en';
 }
@@ -197,22 +165,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const lang = btn.dataset.lang;
       // Set cookie for persistence (1 year)
       document.cookie = `lang=${lang}; path=/; max-age=${60*60*24*365}; SameSite=Lax`;
-      // Redirect to locale subdomain
-      const hostname = window.location.hostname;
-      const port = window.location.port;
-      const parts = hostname.split('.');
-      let newHostname;
-      // Check if we're already on a locale subdomain
-      const isLocaleSubdomain = parts.length >= 2 && ['es', 'hi', 'en'].includes(parts[0]);
-      if (isLocaleSubdomain) {
-        // Replace the first part (locale)
-        newHostname = [lang, ...parts.slice(1)].join('.');
+      // Redirect to locale path
+      const path = window.location.pathname;
+      const parts = path.split('/').filter(Boolean);
+      let newPath;
+      if (parts.length > 0 && ['es', 'hi', 'en'].includes(parts[0])) {
+        // Replace existing locale prefix
+        newPath = '/' + lang + '/' + parts.slice(1).join('/');
       } else {
-        // Prepend locale
-        newHostname = `${lang}.${hostname}`;
+        // Add locale prefix
+        newPath = '/' + lang + path;
       }
-      const portSuffix = port ? `:${port}` : '';
-      const target = `${window.location.protocol}//${newHostname}${portSuffix}${window.location.pathname}${window.location.search}`;
+      const target = `${window.location.protocol}//${window.location.host}${newPath}${window.location.search}`;
       console.log('[Locale] Redirecting to:', target);
       window.location.href = target;
     });
