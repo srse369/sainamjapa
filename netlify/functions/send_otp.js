@@ -1,21 +1,141 @@
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
-// Email/Phone sending - implement based on your provider (SendGrid, Twilio, etc.)
+// Brevo (Sendinblue) email configuration
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
+const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || 'noreply@sainamjapa.local';
+const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Sainam Japam';
+
+// Twilio SMS configuration
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
+
 async function sendOTPEmail(email, code) {
-  // TODO: Implement with your email provider (SendGrid, Resend, etc.)
-  console.log(`Sending OTP ${code} to email ${email}`);
-  return true;
+  if (!BREVO_API_KEY) {
+    console.log('\n📧 ===== EMAIL (Development Mode - Not Sent) =====');
+    console.log('To:', email);
+    console.log('Code:', code);
+    console.log('====================================================\n');
+    return true;
+  }
+
+  try {
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { text-align: center; padding: 20px 0; border-bottom: 2px solid #FF6200; }
+            .content { padding: 30px 20px; }
+            .otp-code { text-align: center; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #FF6200; background: #FEF3E2; padding: 20px; border-radius: 8px; margin: 30px 0; font-family: 'Courier New', monospace; }
+            .warning { background: #FEF2F2; border-left: 4px solid #EF4444; padding: 12px; margin: 20px 0; border-radius: 4px; }
+            .footer { text-align: center; padding: 20px 0; color: #666; font-size: 12px; border-top: 1px solid #E5E7EB; margin-top: 30px; }
+          </style>
+        </head>
+        <body>
+          <div class="header"><h1 style="color: #FF6200; margin: 0;">🕉️ Sainam Japam</h1></div>
+          <div class="content">
+            <h2 style="color: #333;">Your Verification Code</h2>
+            <p>Use this code to sign in to Sainam Japam. This code will expire in <strong>10 minutes</strong>.</p>
+            <div class="otp-code">${code}</div>
+            <div class="warning"><strong>⚠️ Security Notice:</strong> Never share this code with anyone. Sainam Japam staff will never ask for your login code.</div>
+            <p style="color: #666; font-size: 14px;">If you didn't request this code, you can safely ignore this email.</p>
+          </div>
+          <div class="footer"><p>© ${new Date().getFullYear()} Sainam Japam. All rights reserved.</p></div>
+        </body>
+      </html>
+    `;
+
+    const text = `
+Sainam Japam - Your Verification Code
+
+Your verification code is: ${code}
+
+This code will expire in 10 minutes.
+
+⚠️ Security Notice: Never share this code with anyone. Sainam Japam staff will never ask for your login code.
+
+If you didn't request this code, you can safely ignore this email.
+    `.trim();
+
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': BREVO_API_KEY,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender: { name: BREVO_SENDER_NAME, email: BREVO_SENDER_EMAIL },
+        to: [{ email }],
+        subject: 'Your Sainam Japam Verification Code',
+        htmlContent: html,
+        textContent: text,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Brevo API Error:', response.status, errorText);
+      return false;
+    }
+
+    const result = await response.json();
+    console.log('✅ Email sent successfully:', result.messageId);
+    return true;
+  } catch (error) {
+    console.error('❌ Error sending email:', error);
+    return false;
+  }
 }
 
 async function sendOTPSMS(phone, code) {
-  // TODO: Implement with your SMS provider (Twilio, etc.)
-  console.log(`Sending OTP ${code} to phone ${phone}`);
-  return true;
+  if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_PHONE_NUMBER) {
+    console.log('\n📱 ===== SMS (Development Mode - Not Sent) =====');
+    console.log('To:', phone);
+    console.log('Code:', code);
+    console.log('====================================================\n');
+    return true;
+  }
+
+  try {
+    const body = new URLSearchParams({
+      To: phone,
+      From: TWILIO_PHONE_NUMBER,
+      Body: `Your Sainam Japam verification code is: ${code}. Valid for 10 minutes. Do not share.`,
+    });
+
+    const auth = Buffer.from(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`).toString('base64');
+    const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${auth}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: body.toString(),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Twilio API Error:', response.status, errorText);
+      return false;
+    }
+
+    const result = await response.json();
+    console.log('✅ SMS sent successfully:', result.sid);
+    return true;
+  } catch (error) {
+    console.error('❌ Error sending SMS:', error);
+    return false;
+  }
 }
 
 function generateOTP() {
-  return Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit
+  return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 function isEmail(contact) {
@@ -45,7 +165,7 @@ exports.handler = async (event) => {
   }
 
   if (!SUPABASE_URL || !SUPABASE_KEY) {
-    return jsonResponse(500, {error: 'Missing Supabase env variables'});
+    return jsonResponse(500, {error: 'Missing SUPABASE_URL or SUPABASE_KEY env variables'});
   }
 
   let payload;
@@ -55,7 +175,7 @@ exports.handler = async (event) => {
     return jsonResponse(400, {error: 'Invalid JSON'});
   }
 
-  const { contact, type } = payload; // type: 'signup' or 'signin'
+  const { contact, type } = payload;
 
   if (!contact || !type) {
     return jsonResponse(400, {error: 'Contact and type required'});
@@ -70,7 +190,6 @@ exports.handler = async (event) => {
   }
 
   try {
-    // Check rate limiting - max 3 OTPs per 15 minutes per contact
     const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
     const rateLimitRes = await fetch(`${SUPABASE_URL}/rest/v1/otp_codes?contact=eq.${encodeURIComponent(contact)}&created_at=gte.${fifteenMinAgo}&select=id`, {
       headers: {
@@ -86,11 +205,9 @@ exports.handler = async (event) => {
       }
     }
 
-    // Generate OTP
     const code = generateOTP();
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 min expiry
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
-    // Store OTP
     const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/otp_codes`, {
       method: 'POST',
       headers: {
@@ -107,8 +224,7 @@ exports.handler = async (event) => {
       return jsonResponse(500, {error: 'Failed to store OTP'});
     }
 
-    // Send OTP
-    const sent = isEmail(contact) 
+    const sent = isEmail(contact)
       ? await sendOTPEmail(contact, code)
       : await sendOTPSMS(contact, code);
 
