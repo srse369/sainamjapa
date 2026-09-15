@@ -97,7 +97,7 @@ exports.handler = async (event) => {
     return jsonResponse(400, {error: 'Invalid JSON'});
   }
 
-  const {name, date, count} = payload;
+  const {name, date, count, user_id} = payload;
   if (!date || count === undefined || count === null) {
     return jsonResponse(400, {error: 'Missing required fields: date and count'});
   }
@@ -119,8 +119,37 @@ exports.handler = async (event) => {
 
   const geolocation = ip ? await lookupLocation(ip) : {};
 
+  // Resolve user_id and name from users table
+  let resolvedUserId = user_id || null;
+  let resolvedName = name || null;
+
+  if (resolvedUserId && !resolvedName) {
+    // Look up name from user_id
+    const userRes = await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${encodeURIComponent(resolvedUserId)}&select=name`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    if (userRes.ok) {
+      const users = await userRes.json();
+      if (users.length > 0) resolvedName = users[0].name;
+    }
+  } else if (resolvedName && !resolvedUserId) {
+    // Look up user_id from name (exact match, prefer verified)
+    const userRes = await fetch(`${SUPABASE_URL}/rest/v1/users?name=eq.${encodeURIComponent(resolvedName)}&select=id,verified`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    if (userRes.ok) {
+      const users = await userRes.json();
+      if (users.length > 0) {
+        // Prefer verified user, otherwise first match
+        const verified = users.find(u => u.verified);
+        resolvedUserId = (verified || users[0]).id;
+      }
+    }
+  }
+
   const row = {
-    name: name || null,
+    user_id: resolvedUserId,
+    name: resolvedName,
     date,
     count: parsedCount,
     ip: ip || null,

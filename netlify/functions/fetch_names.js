@@ -23,7 +23,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/names?order=name.asc`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/users?select=name&order=name.asc`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -36,8 +36,8 @@ exports.handler = async (event) => {
       return jsonResponse(res.status, {error: 'Failed to fetch names'});
     }
 
-    const names = await res.json();
-    return jsonResponse(200, {ok: true, names: names.map(n => n.name)});
+    const users = await res.json();
+    return jsonResponse(200, {ok: true, names: users.map(u => u.name)});
   } catch (err) {
     return jsonResponse(500, {error: String(err)});
   }

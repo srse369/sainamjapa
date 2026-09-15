@@ -30,7 +30,7 @@ exports.handler = async (event) => {
     return jsonResponse(400, {error: 'Invalid JSON'});
   }
 
-  const { name } = payload;
+  const { name, device_id } = payload;
   if (!name || typeof name !== 'string' || name.trim().length === 0) {
     return jsonResponse(400, {error: 'Name is required'});
   }
@@ -38,7 +38,29 @@ exports.handler = async (event) => {
   const trimmedName = name.trim();
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/names`, {
+    // Check if name exists in users table
+    // For web app, we allow the same name to be used by different users (email/phone will differentiate)
+    // We only care if the name exists to prevent conflicts with authenticated users
+    const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/users?name=eq.${encodeURIComponent(trimmedName)}&select=id,name`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+
+    if (checkRes.ok) {
+      const existing = await checkRes.json();
+      if (existing.length > 0) {
+        // Name exists in users table - this could be an authenticated user
+        // For web app registration, we'll allow it but note it exists
+        // The device_id helps track anonymous registrations
+        return jsonResponse(200, {ok: true, name: trimmedName});
+      }
+    }
+
+    // New registration - insert into users table with device_id
+    // No email/phone for anonymous web registration
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -46,7 +68,7 @@ exports.handler = async (event) => {
         'Authorization': `Bearer ${SUPABASE_KEY}`,
         'Prefer': 'return=representation'
       },
-      body: JSON.stringify({ name: trimmedName })
+      body: JSON.stringify({ name: trimmedName, device_id: device_id || null, verified: false })
     });
 
     const data = await res.json();
