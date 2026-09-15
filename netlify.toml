@@ -5,12 +5,7 @@
 [dev]
   command = ""
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-# Locale path rewrites (optional - handles /en/, /es/, /hi/ prefixes)
+# Locale path rewrites
 [[redirects]]
   from = "/en/*"
   to = "/index.html"
@@ -23,5 +18,11 @@
 
 [[redirects]]
   from = "/hi/*"
+  to = "/index.html"
+  status = 200
+
+# SPA catch-all (static files served first)
+[[redirects]]
+  from = "/*"
   to = "/index.html"
   status = 200
