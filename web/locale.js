@@ -193,5 +193,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-
-export { LOCALE, t };
