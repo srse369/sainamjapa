@@ -60,15 +60,15 @@ export const translations = {
     auth: {
       signup: {
         contactTitle: 'Sign Up',
-        contactSubtitle: 'Enter your email or phone to get started',
-        contactLabel: 'Email or Phone',
+        contactSubtitle: 'Enter your email to get started',
+        contactLabel: 'Email',
         nameLabel: 'Full Name',
         namePlaceholder: 'Your name',
       },
       signin: {
         contactTitle: 'Sign In',
-        contactSubtitle: 'Enter your email or phone to sign in',
-        contactLabel: 'Email or Phone',
+        contactSubtitle: 'Enter your email to sign in',
+        contactLabel: 'Email',
       },
       otp: {
         title: 'Verify Code',
@@ -140,15 +140,15 @@ export const translations = {
     auth: {
       signup: {
         contactTitle: 'Registrarse',
-        contactSubtitle: 'Ingresa tu email o teléfono para comenzar',
-        contactLabel: 'Email o Teléfono',
+        contactSubtitle: 'Ingresa tu email para comenzar',
+        contactLabel: 'Email',
         nameLabel: 'Nombre Completo',
         namePlaceholder: 'Tu nombre',
       },
       signin: {
         contactTitle: 'Iniciar Sesión',
-        contactSubtitle: 'Ingresa tu email o teléfono para entrar',
-        contactLabel: 'Email o Teléfono',
+        contactSubtitle: 'Ingresa tu email para entrar',
+        contactLabel: 'Email',
       },
       otp: {
         title: 'Verificar Código',
@@ -220,15 +220,15 @@ export const translations = {
     auth: {
       signup: {
         contactTitle: 'साइन अप',
-        contactSubtitle: 'शुरू करने के लिए अपना ईमेल या फोन दर्ज करें',
-        contactLabel: 'ईमेल या फोन',
+        contactSubtitle: 'शुरू करने के लिए अपना ईमेल दर्ज करें',
+        contactLabel: 'ईमेल',
         nameLabel: 'पूरा नाम',
         namePlaceholder: 'आपका नाम',
       },
       signin: {
         contactTitle: 'साइन इन करें',
-        contactSubtitle: 'साइन इन करने के लिए अपना ईमेल या फोन दर्ज करें',
-        contactLabel: 'ईमेल या फोन',
+        contactSubtitle: 'साइन इन करने के लिए अपना ईमेल दर्ज करें',
+        contactLabel: 'ईमेल',
       },
       otp: {
         title: 'कोड सत्यापित करें',
