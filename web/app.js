@@ -174,9 +174,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const registerMsg = qs('register-msg');
 
   function openRegisterModal() {
+    console.log('[Register] openRegisterModal called');
     registerModal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
-    qs('register-name').focus();
+    console.log('[Register] aria-hidden now:', registerModal.getAttribute('aria-hidden'));
+    // Try immediately, then after a brief delay
+    const nameInput = qs('register-name');
+    console.log('[Register] nameInput (immediate):', nameInput);
+    console.log('[Register] registerModal.innerHTML:', registerModal.innerHTML.substring(0, 500));
+    if (nameInput) {
+      nameInput.focus();
+    } else {
+      // Retry after a frame
+      requestAnimationFrame(() => {
+        const retryInput = qs('register-name');
+        console.log('[Register] nameInput (retry):', retryInput);
+        console.log('[Register] registerModal.innerHTML (retry):', registerModal.innerHTML.substring(0, 500));
+        if (retryInput) retryInput.focus();
+      });
+    }
   }
 
   function closeRegisterModal() {
@@ -187,7 +203,10 @@ document.addEventListener('DOMContentLoaded', () => {
     registerMsg.style.color = '';
   }
 
-  openRegisterBtn.addEventListener('click', openRegisterModal);
+  openRegisterBtn.addEventListener('click', (e) => {
+    console.log('[Register] openRegisterBtn clicked', e.target);
+    openRegisterModal();
+  });
   registerCloseBtn.addEventListener('click', closeRegisterModal);
   registerModal.addEventListener('click', (e) => {
     if (e.target === registerModal) closeRegisterModal();
@@ -251,8 +270,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const msg = qs('form-msg');
 
   function openModal(){
+    console.log('[Submit] openModal called');
     modal.setAttribute('aria-hidden','false');
     document.body.classList.add('modal-open');
+    console.log('[Submit] aria-hidden now:', modal.getAttribute('aria-hidden'));
     setDefaultDate();
   }
   function closeModal(){
@@ -261,7 +282,10 @@ document.addEventListener('DOMContentLoaded', () => {
     form.reset();
   }
 
-  openBtn.addEventListener('click', openModal);
+  openBtn.addEventListener('click', (e) => {
+    console.log('[Submit] openBtn clicked', e.target);
+    openModal();
+  });
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
   document.addEventListener('keydown', (e)=>{ 

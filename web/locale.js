@@ -37,7 +37,15 @@
 function detectLocale() {
   const hostname = window.location.hostname;
   const parts = hostname.split('.');
+  // Production: es.saimantrajapam.org (3+ parts)
+  // Local: es.localhost (2 parts)
   if (parts.length >= 3) {
+    const subdomain = parts[0];
+    if (['es', 'hi', 'en'].includes(subdomain)) {
+      return subdomain;
+    }
+  } else if (parts.length === 2) {
+    // Local development: es.localhost, hi.localhost, en.localhost
     const subdomain = parts[0];
     if (['es', 'hi', 'en'].includes(subdomain)) {
       return subdomain;
@@ -158,7 +166,18 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (el.tagName === 'OPTION' && el.value === '') {
       el.textContent = t(key);
     } else {
-      el.textContent = t(key);
+      // Only translate the first direct text node, preserve child elements
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+      const textNodes = [];
+      let node;
+      while (node = walker.nextNode()) {
+        if (node.parentElement.closest('script, style')) continue;
+        textNodes.push(node);
+      }
+      // Only translate the first meaningful text node
+      if (textNodes.length > 0) {
+        textNodes[0].textContent = t(key);
+      }
     }
   });
   
@@ -180,14 +199,20 @@ document.addEventListener('DOMContentLoaded', () => {
       document.cookie = `lang=${lang}; path=/; max-age=${60*60*24*365}; SameSite=Lax`;
       // Redirect to locale subdomain
       const hostname = window.location.hostname;
+      const port = window.location.port;
       const parts = hostname.split('.');
       let newHostname;
-      if (parts.length >= 3 && ['es', 'hi', 'en'].includes(parts[0])) {
+      // Check if we're already on a locale subdomain
+      const isLocaleSubdomain = parts.length >= 2 && ['es', 'hi', 'en'].includes(parts[0]);
+      if (isLocaleSubdomain) {
+        // Replace the first part (locale)
         newHostname = [lang, ...parts.slice(1)].join('.');
       } else {
+        // Prepend locale
         newHostname = `${lang}.${hostname}`;
       }
-      const target = `${window.location.protocol}//${newHostname}${window.location.pathname}${window.location.search}`;
+      const portSuffix = port ? `:${port}` : '';
+      const target = `${window.location.protocol}//${newHostname}${portSuffix}${window.location.pathname}${window.location.search}`;
       console.log('[Locale] Redirecting to:', target);
       window.location.href = target;
     });
