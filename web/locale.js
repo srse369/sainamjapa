@@ -169,9 +169,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.documentElement.lang = LOCALE;
   
   // Language switcher
+  console.log('[Locale] DOMContentLoaded, LOCALE:', LOCALE);
+  console.log('[Locale] Found lang-btn elements:', document.querySelectorAll('.lang-btn').length);
   document.querySelectorAll('.lang-btn').forEach(btn => {
     if (btn.dataset.lang === LOCALE) btn.classList.add('active');
     btn.addEventListener('click', () => {
+      console.log('[Locale] Button clicked:', btn.dataset.lang);
       const lang = btn.dataset.lang;
       // Set cookie for persistence (1 year)
       document.cookie = `lang=${lang}; path=/; max-age=${60*60*24*365}; SameSite=Lax`;
@@ -185,6 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
         newHostname = `${lang}.${hostname}`;
       }
       const target = `${window.location.protocol}//${newHostname}${window.location.pathname}${window.location.search}`;
+      console.log('[Locale] Redirecting to:', target);
       window.location.href = target;
     });
   });
