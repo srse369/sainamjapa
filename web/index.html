@@ -10,20 +10,28 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="locale.js"></script>
 </head>
 
 <body>
     <main class="container">
-        <section class="" style="background-color:transparent;">
-            <h3 style="text-align: center;">Sri Sathya Sai Mantra Japam</h3>
-        </section>
+        <header class="header-bar">
+            <div style="text-align: center; flex: 1;">
+                <h3 style="text-align: center;" data-i18n="app.title">Sri Sathya Sai Mantra Japam</h3>
+            </div>
+            <div class="lang-switcher" aria-label="Language">
+                <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
+                <button class="lang-btn" data-lang="es" aria-label="Español">ES</button>
+                <button class="lang-btn" data-lang="hi" aria-label="हिन्दी">HI</button>
+            </div>
+        </header>
 
         <section class="card photo" id="photo-card">
             <img src="/assets/bg.jpg" width="100%" style="border-radius: 10px" alt="Sri Sathya Sai Baba" />
         </section>
 
         <section class="card dashboard" id="dashboard">
-            <h5 style="text-align: center;color: grey;">Total Count</h5>
+            <h5 style="text-align: center;color: grey;" data-i18n="dashboard.totalCount">Total Count</h5>
             <div class="total">
                 <span id="total-count">—</span>
             </div>
@@ -31,10 +39,10 @@
 
         <div width="100%" style="display: flex; flex-direction: column; justify-content: center;">
             <button id="open-register" class="register-fab" aria-haspopup="dialog"
-                aria-controls="register-modal">Register
+                aria-controls="register-modal" data-i18n="dashboard.registerName">Register
                 Name</button>
             <br />
-            <button id="open-submit" class="submit-fab" aria-haspopup="dialog" aria-controls="submit-modal">Submit your
+            <button id="open-submit" class="submit-fab" aria-haspopup="dialog" aria-controls="submit-modal" data-i18n="dashboard.submitJapam">Submit your
                 Japam count</button>
         </div>
 
@@ -48,30 +56,31 @@
         <br />
         <br />
         <br />
+        <br />
 
         <section class="card breakdown" id="breakdown-dashboard">
-            <h5 style="text-align: center;color: grey;">Daily Breakdown</h5>
+            <h5 style="text-align: center;color: grey;" data-i18n="dashboard.dailyBreakdown">Daily Breakdown</h5>
             <div id="daily-histogram" class="histogram" aria-live="polite">
                 <!-- bars inserted here -->
             </div>
         </section>
 
         <section class="card map-card" id="map-section" style="display: none;">
-            <h5 style="text-align: center;color: grey;">Locations</h5>
+            <h5 style="text-align: center;color: grey;" data-i18n="dashboard.locations">Locations</h5>
             <div id="world-map" aria-label="Map of participation locations"></div>
         </section>
 
         <div id="register-modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
             <div class="modal-content">
-                <button class="modal-close" id="register-modal-close" aria-label="Close">×</button>
-                <h2>Register Your Name</h2>
+                <button class="modal-close" id="register-modal-close" aria-label="Close" data-i18n="modal.close">×</button>
+                <h2 data-i18n="register.title">Register Your Name</h2>
                 <form id="register-form">
-                    <label>Full Name (required)
-                        <input type="text" id="register-name" name="name" placeholder="Your name" required>
+                    <label data-i18n="register.label">Full Name (required)
+                        <input type="text" id="register-name" name="name" placeholder="Your name" required data-i18n="register.placeholder">
                     </label>
-                    <p class="muted small">Register once to appear in the submission dropdown.</p>
+                    <p class="muted small" data-i18n="register.hint">Register once to appear in the submission dropdown.</p>
                     <div class="actions">
-                        <button type="submit" id="register-btn">Register</button>
+                        <button type="submit" id="register-btn" data-i18n="register.button">Register</button>
                     </div>
                 </form>
                 <p id="register-msg" class="muted"></p>
@@ -80,27 +89,27 @@
 
         <div id="submit-modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
             <div class="modal-content">
-                <button class="modal-close" id="modal-close" aria-label="Close">×</button>
-                <h2>Submit Today</h2>
+                <button class="modal-close" id="modal-close" aria-label="Close" data-i18n="modal.close">×</button>
+                <h2 data-i18n="submit.title">Submit Today</h2>
                 <form id="submit-form">
-                    <label>Name (select or leave anonymous)
+                    <label data-i18n="submit.nameLabel">Name (select or leave anonymous)
                         <select id="name" name="name">
-                            <option value="">— Anonymous —</option>
+                            <option value="" data-i18n="submit.anonymous">— Anonymous —</option>
                         </select>
                     </label>
-                    <p class="muted small">Your submission will be recorded but your name will not be displayed
+                    <p class="muted small" data-i18n="submit.hint">Your submission will be recorded but your name will not be displayed
                         publicly.</p>
 
-                    <label>Date (required)
+                    <label data-i18n="submit.dateLabel">Date (required)
                         <input type="date" id="date" name="date" required>
                     </label>
 
-                    <label>Japam Count (required)
+                    <label data-i18n="submit.countLabel">Japam Count (required)
                         <input type="number" id="count" name="count" min="0" required>
                     </label>
 
                     <div class="actions">
-                        <button type="submit" id="submit-btn">Submit your Japam count</button>
+                        <button type="submit" id="submit-btn" data-i18n="submit.button">Submit your Japam count</button>
                     </div>
                 </form>
                 <p id="form-msg" class="muted"></p>

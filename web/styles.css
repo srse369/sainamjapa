@@ -41,19 +41,53 @@
   /* -----------------------------
     Header
     ----------------------------- */
-  .header {
+  .header-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    margin-bottom: 18px
+    margin-bottom: 18px;
+    padding: 8px 0;
   }
 
-  .header h1 {
+  .header-bar h3 {
     margin: 0;
     font-size: 26px;
     font-weight: 700;
-    color: #073763
+    color: #073763;
+    text-align: center;
+    flex: 1;
+  }
+
+  .lang-switcher {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+  }
+
+  .lang-btn {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    box-shadow: none;
+  }
+
+  .lang-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .lang-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
   }
 
   h5 {
